@@ -24,7 +24,14 @@ class clargs():
             }
         ]
         try:
-            api_response = api_client.crm.contacts
+
+            
+            #
+            # TODO:
+            #
+            api_response = self.api_client.crm.contacts
+
+
         except:
             pass
 
@@ -41,6 +48,7 @@ class clargs():
         pass
 
     def __init__(self):
+        self.api_client = HubSpot()
         self.args = sys.argv
         self.parser = argparse.ArgumentParser(
             prog='HubSpot-CRM-CLI',
