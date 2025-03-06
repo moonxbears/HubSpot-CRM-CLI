@@ -171,5 +171,4 @@ cython_debug/
 .pypirc
 
 # personal
-venv/
 accessToken

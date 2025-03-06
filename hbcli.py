@@ -1,7 +1,7 @@
 import os
 import sys
 import hubspot.crm
-from argparser.clargs import clargs
+from src.argparser.clargs import clargs
 
 def main():
     clargs()
