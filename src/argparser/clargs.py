@@ -2,9 +2,14 @@ import json
 import sys
 import argparse
 from hubspot import HubSpot
-
+from hubspot.crm.objects import PublicObjectSearchRequest, ApiException
+from hubspot.crm.objects.models.collection_response_with_total_simple_public_object_forward_paging import CollectionResponseWithTotalSimplePublicObjectForwardPaging
 class clargs():
     
+    def _get_access_token(self):
+        with open("C:\\Users\\jnjohnson\\Documents\\dev\\HubSpotCRM\\HubSpot-CRM-CLI\\accessToken", 'r') as file:
+            self.access_token = file.readline()
+
     def create_records(self, args):
         pass
 
@@ -15,25 +20,24 @@ class clargs():
             filters.append({
                 "value": value,
                 "propertyName": key,
-                "operator": "EQ"
+                "operator": "NEQ"
             })
 
         filter_groups = [
             {
-                "filters":filters
+                "filters": filters
             }
         ]
+        obj_request = PublicObjectSearchRequest(filter_groups=filter_groups)
         try:
+            api_response:CollectionResponseWithTotalSimplePublicObjectForwardPaging = self.api_client.crm.objects.search_api.do_search(object_type=args.object, public_object_search_request=obj_request)
+            print(api_response)
+            #print(api_response.keys())
+            #for item in api_response["results"]:
+                #print(item)
 
-            
-            #
-            # TODO:
-            #
-            api_response = self.api_client.crm.contacts
-
-
-        except:
-            pass
+        except ApiException as e:
+            print(f"exception when calling search_api->do_search: {e}")
 
     def update_records(self, args):
         pass
@@ -47,8 +51,11 @@ class clargs():
     def config_parse(self, args):
         pass
 
+
+
     def __init__(self):
-        self.api_client = HubSpot()
+        self._get_access_token()
+        self.api_client = HubSpot(access_token=self.access_token)
         self.args = sys.argv
         self.parser = argparse.ArgumentParser(
             prog='HubSpot-CRM-CLI',
