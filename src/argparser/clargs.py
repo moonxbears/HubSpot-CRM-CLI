@@ -4,11 +4,27 @@ import argparse
 from hubspot import HubSpot
 from hubspot.crm.objects import PublicObjectSearchRequest, ApiException
 from hubspot.crm.objects.models.collection_response_with_total_simple_public_object_forward_paging import CollectionResponseWithTotalSimplePublicObjectForwardPaging
+from hubspot.crm.objects.models.simple_public_object import SimplePublicObject
+from prettytable import PrettyTable
+
 class clargs():
     
     def _get_access_token(self):
         with open("C:\\Users\\jnjohnson\\Documents\\dev\\HubSpotCRM\\HubSpot-CRM-CLI\\accessToken", 'r') as file:
             self.access_token = file.readline()
+
+    def _get_format(self, args, response:CollectionResponseWithTotalSimplePublicObjectForwardPaging):
+        results:list[SimplePublicObject] = response.results
+        table = PrettyTable()
+        table.field_names = dict[str, str](results[0].properties).keys()
+        for item in results:
+            
+            pass
+
+        if (args.format_type == "table"):
+            pass
+        return response
+
 
     def create_records(self, args):
         pass
@@ -20,7 +36,7 @@ class clargs():
             filters.append({
                 "value": value,
                 "propertyName": key,
-                "operator": "NEQ"
+                "operator": "EQ"
             })
 
         filter_groups = [
@@ -31,10 +47,8 @@ class clargs():
         obj_request = PublicObjectSearchRequest(filter_groups=filter_groups)
         try:
             api_response:CollectionResponseWithTotalSimplePublicObjectForwardPaging = self.api_client.crm.objects.search_api.do_search(object_type=args.object, public_object_search_request=obj_request)
-            print(api_response)
-            #print(api_response.keys())
-            #for item in api_response["results"]:
-                #print(item)
+            obj = self._get_format(args=args, response=api_response)
+            print(obj)
 
         except ApiException as e:
             print(f"exception when calling search_api->do_search: {e}")
@@ -76,7 +90,8 @@ class clargs():
         self.read_parser.set_defaults(func=self.search_records)
         self.read_parser.add_argument('-o', '--object', type=str, required=True, help="the object name for hubspot")
         self.read_parser.add_argument('-d', '--dict', type=str, required=True, help="dictionary argument for filtering, creating or updating records")
-        
+        self.read_parser.add_argument('-f', '--format-type', type=str, required=False, default="table", choices=["table", "csv", "json", "info"], help="the format of the results of the query to return")
+
         # update positional
         self.update_parser = self.subparsers.add_parser(name='update', help="update record(s) data for the object")
         self.update_parser.set_defaults(func=self.update_records)
