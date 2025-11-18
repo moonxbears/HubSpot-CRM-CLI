@@ -1,0 +1,7 @@
+{
+  "uid": "settings-HubspotConnect",
+  "type": "settings",
+  "config": {
+    "entrypoint": "/app/settings/SettingsPage.tsx"
+  }
+}
