@@ -1,10 +1,12 @@
 import React from "react";
-import { EmptyState, Link, Text } from "@hubspot/ui-extensions";
+import { EmptyState, Link, Text, SettingsContext } from "@hubspot/ui-extensions";
 import { hubspot } from "@hubspot/ui-extensions";
 
 hubspot.extend<"settings">(({ context }) => <SettingsPage context={context}/>);
-
-const SettingsPage = ({ context }) => {
+interface SettingsPageProps {
+  context: SettingsContext;
+}
+const SettingsPage = ({ context }: SettingsPageProps) => {
 
   console.log({context});
 

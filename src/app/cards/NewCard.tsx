@@ -1,10 +1,12 @@
 import React from "react";
-import { EmptyState, Link, Text } from "@hubspot/ui-extensions";
+import { EmptyState, Link, Text, CrmContext } from "@hubspot/ui-extensions";
 import { hubspot } from "@hubspot/ui-extensions";
 
 hubspot.extend<'crm.record.tab'>(({ context }) => <Extension context={context} />);
-
-const Extension = ({ context }) => {
+interface CrmContextProps {
+  context: CrmContext;
+}
+const Extension = ({ context }: CrmContextProps) => {
 
   const appCardDocsLink = 'https://developers.hubspot.com/docs/apps/developer-platform/add-features/ui-extensibility/app-cards/overview';
 
