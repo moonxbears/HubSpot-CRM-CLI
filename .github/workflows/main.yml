@@ -2,25 +2,23 @@ on:
   push:
     branches:
       - master
-
+env:
+  DEFAULT_ACCOUNT_ID: ${{secrets.HUBSPOT_ACCOUNT_ID}}
+  DEFAULT_PERSONAL_ACCESS_KEY: ${{ secrets.HUBSPOT_PERSONAL_ACCESS_KEY }}
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: HubSpot Project Upload
         id: upload-step
         uses: HubSpot/hubspot-project-actions/project-upload@v1.0.0
-        env:
-          HUBSPOT_ACCOUNT_ID: ${{ secrets.HUBSPOT_ACCOUNT_ID }}
-          HUBSPOT_PERSONAL_ACCESS_KEY: ${{ secrets.HUBSPOT_PERSONAL_ACCESS_KEY }}
-
+      - name: Echo build_id for diagnostics
+        run: echo "Upload build_id=${{ steps.upload-step.outputs.build_id }}"
       - name: HubSpot Project Deploy
         uses: HubSpot/hubspot-project-actions/project-deploy@v1.0.0
         with:
-          build_id: ${{ steps.upload-step.outputs.build_id }}
-        env:
-          HUBSPOT_ACCOUNT_ID: ${{ secrets.HUBSPOT_ACCOUNT_ID }}
-          HUBSPOT_PERSONAL_ACCESS_KEY: ${{ secrets.HUBSPOT_PERSONAL_ACCESS_KEY }}
+          account_id: ${{ secrets.HUBSPOT_ACCOUNT_ID }}
+          personal_access_key: ${{ secrets.HUBSPOT_PERSONAL_ACCESS_KEY }}
+          deploy_latest_build: true
